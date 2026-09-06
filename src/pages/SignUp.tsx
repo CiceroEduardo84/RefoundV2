@@ -52,8 +52,8 @@ export function SignUp() {
       </Button>
 
       <a
-        href="/signup"
-        className="text-sm font-semibold text-gray-100 mt-10 mb-4 text-center hover: text-green-800 transition ease-linear"
+        href="/"
+        className="text-sm font-semibold text-gray-100 mt-10 mb-4 text-center hover:text-green-800 transition ease-linear"
       >
         Já tenho uma conta
       </a>
