@@ -4,7 +4,8 @@ import { Button } from "../components/Button";
 import searchSVG from "../assets/search.svg";
 import { RefundItem } from "../components/RefundItem";
 import { CATEGORIES } from "../utils/categries";
-import { formatCurrency } from "../utils/formatcurrency";
+import { formatCurrency } from "../utils/formatCurrency";
+import { Pagination } from "../components/Pagination";
 
 const exemplo = {
   id: "123",
@@ -42,6 +43,8 @@ export function Dashboard() {
       <div className="mt-6 flex flex-col gap-4 max-h-[342px] overflow-y-scroll">
         <RefundItem data={exemplo} />
       </div>
+
+      <Pagination current={1} total={10} />
     </div>
   );
 }
