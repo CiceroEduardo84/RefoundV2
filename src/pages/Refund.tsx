@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Input } from "../components/Input";
 import { Select } from "../components/Select";
+import fileSvg from "../assets/file.svg";
 import { CATEGORIES, CATEGORIES_KEY } from "../utils/categries";
 import { Upload } from "../components/Upload";
 import { Button } from "../components/Button";
@@ -73,10 +74,21 @@ export function Refund() {
         />
       </div>
 
-      <Upload
-        onChange={(e) => e.target.files && setFilename(e?.target.files[0])}
-        disabled={!params.id}
-      />
+      {params.id ? (
+        <a
+          href="https://www.rocketseat.com.br/"
+          target="_blank"
+          className="text-sm text-green-100 font-semibold flex items-center justify-center gap-2 my-6 hover:opacity-70 transition ease-linear"
+        >
+          <img src={fileSvg} alt="ïcone de arquivo" />
+          Abrir Comprovante
+        </a>
+      ) : (
+        <Upload
+          onChange={(e) => e.target.files && setFilename(e?.target.files[0])}
+          disabled={!params.id}
+        />
+      )}
 
       <Button type="submit" isLoading={isLoading}>
         {params.id ? "Voltar" : "Enviar"}
