@@ -8,9 +8,9 @@ import { Button } from "../components/Button";
 import { useNavigate, useParams } from "react-router";
 
 export function Refund() {
-  const [name, setName] = useState("");
-  const [amount, setAmount] = useState("");
-  const [category, setCategory] = useState("");
+  const [name, setName] = useState("Teste");
+  const [amount, setAmount] = useState("34");
+  const [category, setCategory] = useState("transport");
   const [isLoading, setIsLoading] = useState(false);
   const [filename, setFilename] = useState<File | null>(null);
 
