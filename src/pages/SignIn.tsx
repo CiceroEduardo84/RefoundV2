@@ -1,18 +1,41 @@
+import { useActionState } from "react";
 import { Button } from "../components/Button";
 import { Input } from "../components/Input";
-import { useState } from "react";
+import { z, ZodError } from "zod";
+import { api } from "../services/api";
+import { AxiosError } from "axios";
+
+const signInScheme = z.object({
+  email: z.string().email({ message: "E-mial inválido" }),
+  password: z.string().trim().min(1, { message: "Informe a senha" }),
+});
 
 export function SignIn() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [isLoading, setIsLoading] = useState(true);
+  const [state, formAction, isLoading] = useActionState(onAction, null);
 
-  function onAction(formData: FormData) {
-    console.log(formData.get("email"));
+  async function onAction(_: any, formData: FormData) {
+    try {
+      const data = signInScheme.parse({
+        email: formData.get("email"),
+        password: formData.get("password"),
+      });
+
+      const response = await api.post("/sessions", data);
+    } catch (error) {
+      if (error instanceof ZodError) {
+        return { message: error.issues[0].message };
+      }
+
+      if (error instanceof AxiosError) {
+        return { message: error.response?.data.message };
+      }
+
+      return { message: "Não foi possível entrar!" };
+    }
   }
 
   return (
-    <form action={onAction} className="w-full flex flex-col gap-4">
+    <form action={formAction} className="w-full flex flex-col gap-4">
       <Input
         name="email"
         required
@@ -28,6 +51,10 @@ export function SignIn() {
         type="password"
         placeholder="123456"
       />
+
+      <p className="text-sm text-red-600 text-center my-4 font-medium">
+        {state?.message}
+      </p>
 
       <Button type="submit" isLoading={isLoading}>
         Entrar
