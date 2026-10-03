@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Input } from "../components/Input";
 import { Select } from "../components/Select";
 import fileSvg from "../assets/file.svg";
@@ -6,9 +6,10 @@ import { CATEGORIES, CATEGORIES_KEY } from "../utils/categries";
 import { Upload } from "../components/Upload";
 import { Button } from "../components/Button";
 import { useNavigate, useParams } from "react-router";
-import z, { ZodError } from "zod";
+import { z, ZodError } from "zod";
 import { AxiosError } from "axios";
 import { api } from "../services/api";
+import { formatCurrency } from "../utils/formatCurrency";
 
 const refundSchema = z.object({
   name: z
@@ -26,6 +27,7 @@ export function Refund() {
   const [category, setCategory] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [filename, setFilename] = useState<File | null>(null);
+  const [fileURL, setFileURL] = useState<string | null>(null);
 
   const navigate = useNavigate();
   const params = useParams<{ id: string }>();
@@ -78,6 +80,28 @@ export function Refund() {
     }
   }
 
+  async function fetchRefund(id: string) {
+    try {
+      const { data } = await api.get<RefundAPIResponse>(`/refunds/${id}`);
+
+      setName(data.name);
+      setCategory(data.category);
+      setAmount(formatCurrency(data.amount));
+      setFileURL(data.filename);
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        return { message: error.response?.data.message };
+      }
+      alert("Não foi possível carregar!");
+    }
+  }
+
+  useEffect(() => {
+    if (params.id) {
+      fetchRefund(params.id);
+    }
+  }, [params.id]);
+
   return (
     <form
       onSubmit={onSubmit}
@@ -125,9 +149,9 @@ export function Refund() {
         />
       </div>
 
-      {params.id ? (
+      {params.id && fileURL ? (
         <a
-          href="https://www.rocketseat.com.br/"
+          href={`http://loclhost:3333/uploads/${fileURL}`}
           target="_blank"
           className="text-sm text-green-100 font-semibold flex items-center justify-center gap-2 my-6 hover:opacity-70 transition ease-linear"
         >
